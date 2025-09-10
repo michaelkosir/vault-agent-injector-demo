@@ -34,7 +34,14 @@ kubectl get pods -n vault-agent-injector
 kubectl get pods -n demo
 
 # watch the database credentials change every 30s
-k logs -n demo deployments/app01 -c app --follow
+kubectl logs -n demo deployments/app01 -c app --follow
+
+kubectl exec -it -n demo -c app pod/<POD_NAME> -- /bin/sh
+
+cd /vault/secrets
+cat app
+cat database
+watch cat database
 ```
 
 ```shell
