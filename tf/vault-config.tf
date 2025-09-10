@@ -87,9 +87,10 @@ resource "vault_database_secrets_mount" "postgres" {
     name          = "database001"
     allowed_roles = ["example"]
 
-    username       = "postgres"
-    password       = var.postgres_password
-    connection_url = "postgres://{{username}}:{{password}}@postgres.${var.workload_namespace}.svc.cluster.local/postgres"
+    username          = "postgres"
+    password          = var.postgres_password
+    connection_url    = "postgres://{{username}}:{{password}}@postgres.${var.workload_namespace}.svc.cluster.local/postgres"
+    verify_connection = false
   }
 }
 
