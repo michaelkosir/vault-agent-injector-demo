@@ -26,14 +26,14 @@ resource "kubernetes_deployment" "app01" {
 
     selector {
       match_labels = {
-        app = "example"
+        app = "app01"
       }
     }
 
     template {
       metadata {
         labels = {
-          app = "example"
+          app = "app01"
         }
 
         annotations = {
@@ -82,7 +82,7 @@ resource "kubernetes_deployment" "app01" {
         }
 
         container {
-          name    = "example"
+          name    = "app"
           image   = "alpine:latest"
           command = ["/bin/sh", "-c"]
           args    = ["while true; do for f in /vault/secrets/*; do echo \"$(date +%T) $f\"; cat \"$f\"; echo; echo; done && sleep 10; done"]
