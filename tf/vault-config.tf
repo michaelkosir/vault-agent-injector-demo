@@ -39,10 +39,10 @@ resource "vault_kubernetes_auth_backend_role" "example" {
   depends_on = [kubernetes_service.vault]
 
   backend                          = vault_auth_backend.k8s.path
-  role_name                        = "example"
+  role_name                        = var.workload_role
   audience                         = "vault"
-  bound_service_account_names      = ["example"]
-  bound_service_account_namespaces = ["example"]
+  bound_service_account_names      = [var.workload_name]
+  bound_service_account_namespaces = [var.workload_namespace]
   token_policies                   = [vault_policy.example.name]
   token_ttl                        = 60 * 60      # 1 hour
   token_max_ttl                    = 60 * 60 * 24 # 1 day
@@ -88,7 +88,7 @@ resource "vault_database_secrets_mount" "postgres" {
     allowed_roles = ["example"]
 
     username       = "postgres"
-    password       = "root"
+    password       = var.postgres_password
     connection_url = "postgres://{{username}}:{{password}}@postgres.example.svc.cluster.local/postgres"
   }
 }

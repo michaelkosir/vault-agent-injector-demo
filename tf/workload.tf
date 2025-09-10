@@ -1,24 +1,24 @@
-resource "kubernetes_namespace" "demo" {
+resource "kubernetes_namespace" "workload" {
   depends_on = [kind_cluster.dev]
 
   metadata {
-    name = "example"
+    name = var.workload_namespace
   }
 }
 
-resource "kubernetes_service_account" "example" {
+resource "kubernetes_service_account" "workload" {
   metadata {
-    name      = "demo"
-    namespace = kubernetes_namespace.demo.metadata[0].name
+    name      = var.workload_name
+    namespace = kubernetes_namespace.workload.metadata[0].name
   }
 }
 
-resource "kubernetes_deployment" "app01" {
+resource "kubernetes_deployment" "workload" {
   depends_on = [helm_release.vai]
 
   metadata {
-    name      = "app01"
-    namespace = kubernetes_namespace.demo.metadata[0].name
+    name      = var.workload_name
+    namespace = kubernetes_namespace.workload.metadata[0].name
   }
 
   spec {
@@ -26,21 +26,21 @@ resource "kubernetes_deployment" "app01" {
 
     selector {
       match_labels = {
-        app = "app01"
+        app = var.workload_name
       }
     }
 
     template {
       metadata {
         labels = {
-          app = "app01"
+          app = var.workload_name
         }
 
         annotations = {
           # Inject the Vault Agent sidecar
           "vault.hashicorp.com/agent-inject" = "true"
           "vault.hashicorp.com/auth-path"    = "auth/k8s"
-          "vault.hashicorp.com/role"         = "example"
+          "vault.hashicorp.com/role"         = var.workload_role
 
           # KV (static) credentials
           "vault.hashicorp.com/agent-inject-secret-app"   = "kv/path/to/secret"
@@ -66,7 +66,7 @@ resource "kubernetes_deployment" "app01" {
       }
 
       spec {
-        service_account_name = kubernetes_service_account.example.metadata[0].name
+        service_account_name = kubernetes_service_account.workload.metadata[0].name
 
         volume {
           name = "vault-service-account-token"

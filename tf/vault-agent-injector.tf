@@ -7,7 +7,7 @@ resource "helm_release" "vai" {
 
   repository = "https://helm.releases.hashicorp.com"
   chart      = "vault"
-  version    = "0.29.1"
+  version    = var.vai_version
 
   set {
     name  = "global.externalVaultAddr"
