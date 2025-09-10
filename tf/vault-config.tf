@@ -16,7 +16,7 @@ resource "vault_kubernetes_auth_backend_config" "k8s" {
   kubernetes_host = "https://kubernetes.default.svc.cluster.local"
 }
 
-data "vault_policy_document" "example" {
+data "vault_policy_document" "this" {
   rule {
     path         = "kv/data/path/to/secret"
     capabilities = ["read"]
@@ -28,14 +28,14 @@ data "vault_policy_document" "example" {
   }
 }
 
-resource "vault_policy" "example" {
+resource "vault_policy" "this" {
   depends_on = [kubernetes_service.vault]
 
   name   = "example"
-  policy = data.vault_policy_document.example.hcl
+  policy = data.vault_policy_document.this.hcl
 }
 
-resource "vault_kubernetes_auth_backend_role" "example" {
+resource "vault_kubernetes_auth_backend_role" "this" {
   depends_on = [kubernetes_service.vault]
 
   backend                          = vault_auth_backend.k8s.path
@@ -43,7 +43,7 @@ resource "vault_kubernetes_auth_backend_role" "example" {
   audience                         = "vault"
   bound_service_account_names      = [var.workload_name]
   bound_service_account_namespaces = [var.workload_namespace]
-  token_policies                   = [vault_policy.example.name]
+  token_policies                   = [vault_policy.this.name]
   token_ttl                        = 60 * 60      # 1 hour
   token_max_ttl                    = 60 * 60 * 24 # 1 day
 }
@@ -89,7 +89,7 @@ resource "vault_database_secrets_mount" "postgres" {
 
     username       = "postgres"
     password       = var.postgres_password
-    connection_url = "postgres://{{username}}:{{password}}@postgres.example.svc.cluster.local/postgres"
+    connection_url = "postgres://{{username}}:{{password}}@postgres.${var.workload_namespace}.svc.cluster.local/postgres"
   }
 }
 
