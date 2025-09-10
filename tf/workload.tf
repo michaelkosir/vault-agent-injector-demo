@@ -14,7 +14,7 @@ resource "kubernetes_service_account" "workload" {
 }
 
 resource "kubernetes_deployment" "workload" {
-  depends_on = [helm_release.vai]
+  depends_on = [helm_release.vai, vault_database_secret_backend_role.postgres]
 
   metadata {
     name      = var.workload_name
