@@ -1,4 +1,4 @@
-resource "kubernetes_namespace" "example" {
+resource "kubernetes_namespace" "demo" {
   depends_on = [kind_cluster.dev]
 
   metadata {
@@ -8,17 +8,17 @@ resource "kubernetes_namespace" "example" {
 
 resource "kubernetes_service_account" "example" {
   metadata {
-    name      = "example"
-    namespace = kubernetes_namespace.example.metadata[0].name
+    name      = "demo"
+    namespace = kubernetes_namespace.demo.metadata[0].name
   }
 }
 
-resource "kubernetes_deployment" "example" {
+resource "kubernetes_deployment" "app01" {
   depends_on = [helm_release.vai]
 
   metadata {
-    name      = "example"
-    namespace = kubernetes_namespace.example.metadata[0].name
+    name      = "app01"
+    namespace = kubernetes_namespace.demo.metadata[0].name
   }
 
   spec {

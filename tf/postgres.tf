@@ -1,7 +1,7 @@
 resource "kubernetes_pod" "postgres" {
   metadata {
     name      = "postgres"
-    namespace = kubernetes_namespace.example.metadata[0].name
+    namespace = kubernetes_namespace.demo.metadata[0].name
 
     labels = {
       app = "postgres"
@@ -28,7 +28,7 @@ resource "kubernetes_pod" "postgres" {
 resource "kubernetes_service" "postgres" {
   metadata {
     name      = "postgres"
-    namespace = kubernetes_namespace.example.metadata[0].name
+    namespace = kubernetes_namespace.demo.metadata[0].name
   }
 
   spec {
